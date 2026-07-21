@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Насколько ты знаешь Соню?</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Manrope:wght@400;500;600;700&display=swap');
+
+  :root{
+    --pink: #f6cdd9;
+    --pink-soft: #fbe6ec;
+    --ink: #241a17;
+    --gold: #c69a6d;
+    --gold-deep: #a97e52;
+    --card: #fff8f9;
+  }
+
+  *{ box-sizing:border-box; }
+
+  body{
+    margin:0;
+    background: var(--pink);
+    color: var(--ink);
+    font-family: 'Manrope', sans-serif;
+    padding: 0 0 80px;
+  }
+
+  .hero{
+    background: var(--ink);
+    color: var(--pink-soft);
+    padding: 56px 24px 44px;
+    text-align:center;
+    border-bottom: 6px solid var(--gold);
+  }
+  .hero .eyebrow{
+    font-family:'Playfair Display', serif;
+    font-style: italic;
+    color: var(--pink);
+    font-size: 15px;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+  }
+  .hero h1{
+    font-family:'Playfair Display', serif;
+    font-weight:700;
+    font-size: clamp(32px, 6vw, 52px);
+    margin: 0;
+    line-height: 1.1;
+  }
+  .hero h1 em{ color: var(--pink); }
+  .hero p{
+    margin-top: 14px;
+    font-size: 15px;
+    opacity: 0.75;
+  }
+
+  .wrap{ max-width: 640px; margin: 0 auto; padding: 32px 20px 0; }
+
+  .block{
+    background: var(--card);
+    border-radius: 4px;
+    margin-bottom: 28px;
+    overflow: hidden;
+    box-shadow: 0 2px 0 rgba(36,26,23,0.06);
+  }
+  .block-head{
+    padding: 20px 24px 14px;
+    border-bottom: 1px solid var(--pink);
+  }
+  .block-head .tag{
+    font-family:'Playfair Display', serif;
+    font-style: italic;
+    color: var(--gold-deep);
+    font-size: 13px;
+    display:block;
+    margin-bottom: 4px;
+  }
+  .block-head h2{
+    font-family:'Playfair Display', serif;
+    margin: 0;
+    font-size: 26px;
+  }
+
+  .q{ padding: 20px 24px; border-bottom: 1px dashed #ecd3db; }
+  .q:last-child{ border-bottom: none; }
+  .q-num{
+    font-family:'Playfair Display', serif;
+    color: var(--gold);
+    font-weight: 700;
+    font-size: 22px;
+    margin-right: 8px;
+  }
+  .q-text{ font-weight: 600; font-size: 16px; }
+
+  .options{ margin-top: 12px; display:flex; flex-direction:column; gap:8px; }
+  label.opt{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding: 10px 14px;
+    border: 1.5px solid var(--pink);
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14.5px;
+    transition: all .15s ease;
+  }
+  label.opt:hover{ border-color: var(--gold); background: var(--pink-soft); }
+  label.opt input{ accent-color: var(--gold-deep); }
+  label.opt.checked{ border-color: var(--gold-deep); background: var(--pink-soft); }
+
+  input[type=text], select{
+    width: 100%;
+    margin-top: 12px;
+    padding: 12px 14px;
+    border: 1.5px solid var(--pink);
+    border-radius: 3px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 14.5px;
+    background: white;
+    color: var(--ink);
+  }
+  input[type=text]:focus, select:focus{ outline:none; border-color: var(--gold-deep); }
+
+  .rebus-imgs{ display:flex; gap: 14px; margin-bottom: 10px; flex-wrap: wrap; }
+  .rebus-imgs div{
+    flex:1;
+    min-width: 90px;
+    background: var(--pink-soft);
+    border: 1px dashed var(--gold);
+    border-radius: 4px;
+    padding: 14px 10px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--gold-deep);
+  }
+
+  .name-block{
+    background: var(--ink);
+    color: var(--pink-soft);
+    padding: 22px 24px;
+    border-radius: 4px;
+    margin-bottom: 28px;
+  }
+  .name-block label{ display:block; font-family:'Playfair Display', serif; font-style: italic; margin-bottom: 8px; font-size: 15px;}
+  .name-block input{ margin-top:0; border: none; }
+
+  .submit-btn{
+    width: 100%;
+    padding: 16px;
+    background: var(--ink);
+    color: var(--pink);
+    border: none;
+    border-radius: 3px;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-style: italic;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background .15s ease;
+  }
+  .submit-btn:hover{ background: #3a2b26; }
+  .submit-btn:disabled{ opacity: 0.5; cursor: default; }
+
+  .status{
+    text-align: center;
+    margin-top: 14px;
+    font-size: 14px;
+    min-height: 18px;
+  }
+  .status.error{ color: #a1372f; }
+  .status.ok{ color: var(--gold-deep); font-weight: 600; }
+
+  .thanks{
+    text-align:center;
+    background: var(--card);
+    border-radius: 4px;
+    padding: 40px 24px;
+  }
+  .thanks h2{
+    font-family:'Playfair Display', serif;
+    font-style: italic;
+    color: var(--gold-deep);
+    font-size: 24px;
+  }
+
+  .toggle-results{
+    text-align:center;
+    margin-top: 30px;
+  }
+  .toggle-results button{
+    background: none;
+    border: 1px solid var(--ink);
+    padding: 10px 18px;
+    border-radius: 20px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    color: var(--ink);
+  }
+
+  .results-list{ margin-top: 20px; display:flex; flex-direction:column; gap: 12px; }
+  .result-card{
+    background: var(--card);
+    border-radius: 4px;
+    padding: 14px 18px;
+    font-size: 13.5px;
+  }
+  .result-card .rname{
+    font-family:'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 6px;
+    color: var(--gold-deep);
+  }
+  .result-card .rline{ margin: 2px 0; opacity: 0.85; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="eyebrow">Игра в честь её 17-летия</span>
+  <h1>Насколько ты знаешь <em>Соню?</em></h1>
+  <p>Отвечай честно, не гугли — и вписывай свой ответ ниже 🎂</p>
+</div>
+
+<div class="wrap" id="form-wrap">
+
+  <div class="name-block">
+    <label for="playerName">Как тебя записать?</label>
+    <input type="text" id="playerName" placeholder="Твоё имя">
+  </div>
+
+  <!-- BLOCK 1 -->
+  <div class="block">
+    <div class="block-head"><span class="tag">блок 1</span><h2>Детство</h2></div>
+
+    <div class="q">
+      <span class="q-num">1.</span><span class="q-text">В каком танцевальном коллективе занималась Соня в детстве?</span>
+      <div class="options" data-q="q1">
+        <label class="opt"><input type="radio" name="q1" value="Белые росинки"> «Белые росинки»</label>
+        <label class="opt"><input type="radio" name="q1" value="Зорька"> «Зорька»</label>
+        <label class="opt"><input type="radio" name="q1" value="Ассорти"> «Ассорти»</label>
+        <label class="opt"><input type="radio" name="q1" value="не танцевала"> не танцевала</label>
+      </div>
+    </div>
+
+    <div class="q">
+      <span class="q-num">2.</span><span class="q-text">В какой цвет Соня красила волосы?</span>
+      <div class="options" data-q="q2">
+        <label class="opt"><input type="radio" name="q2" value="блонд"> блонд</label>
+        <label class="opt"><input type="radio" name="q2" value="розовый"> розовый</label>
+        <label class="opt"><input type="radio" name="q2" value="фиолетовый"> фиолетовый</label>
+        <label class="opt"><input type="radio" name="q2" value="красный"> красный</label>
+      </div>
+    </div>
+
+    <div class="q">
+      <span class="q-num">3.</span><span class="q-text">В скольких школах училась Соня?</span>
+      <div class="options" data-q="q3">
+        <label class="opt"><input type="radio" name="q3" value="3"> 3</label>
+        <label class="opt"><input type="radio" name="q3" value="2"> 2</label>
+        <label class="opt"><input type="radio" name="q3" value="1"> 1</label>
+        <label class="opt"><input type="radio" name="q3" value="4"> 4</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 2 -->
+  <div class="block">
+    <div class="block-head"><span class="tag">блок 2</span><h2>Факт или ложь</h2></div>
+    <div class="q">
+      <span class="q-text">Три правды, одна выдумка — какое утверждение ложь?</span>
+      <div class="options" data-q="q4">
+        <label class="opt"><input type="radio" name="q4" value="А. Чирлидинг"> А. Соня занималась чирлидингом</label>
+        <label class="opt"><input type="radio" name="q4" value="Б. Ночь на парковке в Германии"> Б. Однажды всю ночь просидела на парковке в Германии</label>
+        <label class="opt"><input type="radio" name="q4" value="В. Обожает слаймы"> В. Соня обожает слаймы</label>
+        <label class="opt"><input type="radio" name="q4" value="Г. Чемпионат по танцам соло"> Г. Выиграла районный чемпионат по танцам в категории «Соло»</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 3 -->
+  <div class="block">
+    <div class="block-head"><span class="tag">блок 3</span><h2>Увлечения</h2></div>
+
+    <div class="q">
+      <span class="q-num">1.</span><span class="q-text">Кто биас Сони в BTS?</span>
+      <div class="options" data-q="q5">
+        <label class="opt"><input type="radio" name="q5" value="RM"> RM</label>
+        <label class="opt"><input type="radio" name="q5" value="Чонгук"> Чонгук</label>
+        <label class="opt"><input type="radio" name="q5" value="Тэхён"> Тэхён</label>
+        <label class="opt"><input type="radio" name="q5" value="Чонгук и Тэхён"> Чонгук и Тэхён</label>
+      </div>
+    </div>
+
+    <div class="q">
+      <span class="q-num">2.</span><span class="q-text">Каких блогеров любит смотреть Соня?</span>
+      <div class="options" data-q="q6">
+        <label class="opt"><input type="radio" name="q6" value="Хозяева"> Хозяева</label>
+        <label class="opt"><input type="radio" name="q6" value="Анастазис"> Анастазис</label>
+        <label class="opt"><input type="radio" name="q6" value="оба варианта"> оба варианта</label>
+        <label class="opt"><input type="radio" name="q6" value="никого из них"> никого из них</label>
+      </div>
+    </div>
+
+    <div class="q">
+      <span class="q-num">3.</span><span class="q-text">Что Соня обожала в детстве и, возможно, до сих пор?</span>
+      <div class="options" data-q="q7">
+        <label class="opt"><input type="radio" name="q7" value="слаймы"> слаймы</label>
+        <label class="opt"><input type="radio" name="q7" value="кубик Рубика"> кубик Рубика</label>
+        <label class="opt"><input type="radio" name="q7" value="наклейки"> наклейки</label>
+        <label class="opt"><input type="radio" name="q7" value="пазлы"> пазлы</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 4: BLITZ -->
+  <div class="block">
+    <div class="block-head"><span class="tag">блок 4</span><h2>Блиц</h2></div>
+
+    <div class="q">
+      <span class="q-num">1.</span><span class="q-text">Любимый бренд косметики?</span>
+      <input type="text" id="q8" placeholder="Твой ответ">
+    </div>
+    <div class="q">
+      <span class="q-num">2.</span><span class="q-text">Любимая еда?</span>
+      <input type="text" id="q9" placeholder="Твой ответ">
+    </div>
+    <div class="q">
+      <span class="q-num">3.</span><span class="q-text">Любимый фильм/сериал?</span>
+      <input type="text" id="q10" placeholder="Твой ответ">
+    </div>
+    <div class="q">
+      <span class="q-num">4.</span><span class="q-text">С кем из подруг знакома дольше всех?</span>
+      <input type="text" id="q11" placeholder="Твой ответ">
+    </div>
+  </div>
+
+  <!-- BLOCK 5: REBUS -->
+  <div class="block">
+    <div class="block-head"><span class="tag">блок 5</span><h2>Ребус</h2></div>
+
+    <div class="q">
+      <span class="q-num">1.</span><span class="q-text">Ребус 1</span>
+      <div class="rebus-imgs"><div>💄 помада</div><div>➕</div><div>📞 Viber</div></div>
+      <input type="text" id="r1" placeholder="Твой ответ">
+    </div>
+    <div class="q">
+      <span class="q-num">2.</span><span class="q-text">Ребус 2</span>
+      <div class="rebus-imgs"><div>🏅 доска почёта</div><div>➕</div><div>9–11 классы</div></div>
+      <input type="text" id="r2" placeholder="Твой ответ">
+    </div>
+    <div class="q">
+      <span class="q-num">3.</span><span class="q-text">Ребус 3</span>
+      <div class="rebus-imgs"><div>🍬 «Грильяж»</div><div>➕</div><div>🧢 берет</div></div>
+      <input type="text" id="r3" placeholder="Твой ответ">
+    </div>
+  </div>
+
+  <!-- FINAL -->
+  <div class="block">
+    <div class="block-head"><span class="tag">последний вопрос</span><h2>Знак зодиака</h2></div>
+    <div class="q">
+      <span class="q-text">Какой у Сони знак зодиака?</span>
+      <select id="q12">
+        <option value="">Выбери знак</option>
+        <option>Овен</option><option>Телец</option><option>Близнецы</option>
+        <option>Рак</option><option>Лев</option><option>Дева</option>
+        <option>Весы</option><option>Скорпион</option><option>Стрелец</option>
+        <option>Козерог</option><option>Водолей</option><option>Рыбы</option>
+      </select>
+    </div>
+  </div>
+
+  <button class="submit-btn" id="submitBtn">Отправить ответы</button>
+  <div class="status" id="status"></div>
+
+  <div class="toggle-results">
+    <button id="toggleBtn">Показать все ответы участниц</button>
+  </div>
+  <div class="results-list" id="resultsList" style="display:none;"></div>
+</div>
+
+<div class="wrap thanks" id="thanks-wrap" style="display:none;">
+  <h2>Спасибо, что сегодня вы рядом со мной 💛</h2>
+  <p>Даже если вы знаете не всё — сегодня отличный повод узнать чуть больше.<br>Я вас всех очень люблю.</p>
+</div>
+
+<script>
+  // highlight selected radio option
+  document.querySelectorAll('.options').forEach(group => {
+    group.querySelectorAll('input[type=radio]').forEach(input => {
+      input.addEventListener('change', () => {
+        group.querySelectorAll('.opt').forEach(o => o.classList.remove('checked'));
+        input.closest('.opt').classList.add('checked');
+      });
+    });
+  });
+
+  const statusEl = document.getElementById('status');
+  const submitBtn = document.getElementById('submitBtn');
+
+  function getRadioValue(name){
+    const el = document.querySelector('input[name="'+name+'"]:checked');
+    return el ? el.value : '';
+  }
+
+  submitBtn.addEventListener('click', async () => {
+    const name = document.getElementById('playerName').value.trim();
+    if(!name){
+      statusEl.textContent = 'Пожалуйста, впиши своё имя';
+      statusEl.className = 'status error';
+      return;
+    }
+
+    const answers = {
+      name: name,
+      timestamp: new Date().toISOString(),
+      q1: getRadioValue('q1'),
+      q2: getRadioValue('q2'),
+      q3: getRadioValue('q3'),
+      q4: getRadioValue('q4'),
+      q5: getRadioValue('q5'),
+      q6: getRadioValue('q6'),
+      q7: getRadioValue('q7'),
+      q8: document.getElementById('q8').value.trim(),
+      q9: document.getElementById('q9').value.trim(),
+      q10: document.getElementById('q10').value.trim(),
+      q11: document.getElementById('q11').value.trim(),
+      r1: document.getElementById('r1').value.trim(),
+      r2: document.getElementById('r2').value.trim(),
+      r3: document.getElementById('r3').value.trim(),
+      q12: document.getElementById('q12').value
+    };
+
+    submitBtn.disabled = true;
+    statusEl.textContent = 'Сохраняю...';
+    statusEl.className = 'status';
+
+    try{
+      const key = 'answers:' + name.toLowerCase().replace(/\s+/g,'_') + ':' + Date.now();
+      const result = await window.storage.set(key, JSON.stringify(answers), true);
+      if(!result){ throw new Error('save failed'); }
+      document.getElementById('form-wrap').style.display = 'none';
+      document.getElementById('thanks-wrap').style.display = 'block';
+    }catch(e){
+      statusEl.textContent = 'Не получилось сохранить, попробуй ещё раз';
+      statusEl.className = 'status error';
+      submitBtn.disabled = false;
+    }
+  });
+
+  // show all results
+  const toggleBtn = document.getElementById('toggleBtn');
+  const resultsList = document.getElementById('resultsList');
+  let shown = false;
+
+  toggleBtn.addEventListener('click', async () => {
+    shown = !shown;
+    if(!shown){
+      resultsList.style.display = 'none';
+      toggleBtn.textContent = 'Показать все ответы участниц';
+      return;
+    }
+    toggleBtn.textContent = 'Загружаю...';
+    try{
+      const list = await window.storage.list('answers:', true);
+      resultsList.innerHTML = '';
+      if(!list || !list.keys || list.keys.length === 0){
+        resultsList.innerHTML = '<div class="result-card">Пока никто не ответил</div>';
+      } else {
+        for(const k of list.keys){
+          try{
+            const res = await window.storage.get(k, true);
+            const a = JSON.parse(res.value);
+            const card = document.createElement('div');
+            card.className = 'result-card';
+            card.innerHTML = `<div class="rname">${a.name}</div>
+              <div class="rline">Детство: ${a.q1||'—'} / ${a.q2||'—'} / ${a.q3||'—'}</div>
+              <div class="rline">Факт или ложь: ${a.q4||'—'}</div>
+              <div class="rline">Увлечения: ${a.q5||'—'} / ${a.q6||'—'} / ${a.q7||'—'}</div>
+              <div class="rline">Блиц: ${a.q8||'—'}, ${a.q9||'—'}, ${a.q10||'—'}, ${a.q11||'—'}</div>
+              <div class="rline">Ребусы: ${a.r1||'—'} / ${a.r2||'—'} / ${a.r3||'—'}</div>
+              <div class="rline">Знак зодиака: ${a.q12||'—'}</div>`;
+            resultsList.appendChild(card);
+          }catch(err){}
+        }
+      }
+      resultsList.style.display = 'flex';
+      toggleBtn.textContent = 'Скрыть ответы';
+    }catch(e){
+      resultsList.innerHTML = '<div class="result-card">Ошибка загрузки</div>';
+      resultsList.style.display = 'flex';
+      toggleBtn.textContent = 'Скрыть ответы';
+    }
+  });
+</script>
+
+</body>
+</html>
